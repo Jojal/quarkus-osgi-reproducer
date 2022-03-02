@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.sample</groupId>
+    <artifactId>root</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Sample - root</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Default values for build number and timestamp -->
+        <scm.build.number>TEST</scm.build.number>
+        <scm.build.timestamp>${maven.build.timestamp}</scm.build.timestamp>
+        <!-- Format for default build timestamp value -->
+        <maven.build.timestamp.format>yyyMMdd_HHmm</maven.build.timestamp.format>
+        <java.release.version>11</java.release.version>
+        <java-executionEnvironment>JavaSE-11</java-executionEnvironment>
+        <java-executionEnvironment-arch>x86_64</java-executionEnvironment-arch>
+
+        <!-- Plugins versions -->
+        <tycho.version>2.6.0</tycho.version>
+    </properties>
+
+    <modules>
+        <module>plugins/org.sample</module>
+        <!--<module>quarkus.sample</module>-->
+    </modules>
+
+    <!-- p2 repositories from where to fetch non compiled bundle aka target platform -->
+    <repositories>
+    </repositories>
+
+    <build>
+        <!-- build plugins -->
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-maven-plugin</artifactId>
+                <version>${tycho.version}</version>
+                <extensions>true</extensions>
+            </plugin>
+
+            <!--Enable the replacement of the SNAPSHOT version in the final product configuration -->
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-packaging-plugin</artifactId>
+                <version>${tycho.version}</version>
+                <configuration>
+                    <format>'${scm.build.number}-${scm.build.timestamp}'</format>
+                </configuration>
+            </plugin>
+
+            <!-- enable source feature generation -->
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-source-plugin</artifactId>
+                <version>${tycho.version}</version>
+                <executions>
+                    <execution>
+                        <id>plugin-source</id>
+                        <goals>
+                            <goal>plugin-source</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>feature-source</id>
+                        <goals>
+                            <goal>feature-source</goal>
+                        </goals>
+                        <configuration>
+                            <!-- put your configuration -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-p2-plugin</artifactId>
+                <version>${tycho.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-p2-metadata</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>p2-metadata</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <version>${tycho.version}</version>
+                <configuration>
+                    <executionEnvironment>${java-executionEnvironment}</executionEnvironment>
+                    <resolver>p2</resolver>
+                    <pomDependencies>consider</pomDependencies>
+                    <environments>
+                        <environment>
+                            <os>linux</os>
+                            <ws>gtk</ws>
+                            <arch>${java-executionEnvironment-arch}</arch>
+                        </environment>
+                    </environments>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-p2-repository-plugin</artifactId>
+                <version>${tycho.version}</version>
+                <configuration>
+                    <xzCompress>false</xzCompress>
+                    <includeAllDependencies>false</includeAllDependencies>
+                    <skipArchive>false</skipArchive>
+                </configuration>
+            </plugin>
+
+        </plugins>
+
+        <!-- defines the default settings for the used plugins -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-p2-publisher-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                    <configuration>
+                        <profiles>${java-executionEnvironment}</profiles>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-compiler-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                        <useProjectSettings>false</useProjectSettings>
+                        <deriveReleaseCompilerArgumentFromTargetLevel>false</deriveReleaseCompilerArgumentFromTargetLevel>
+                        <release>${java.release.version}</release>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-packaging-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                    <configuration>
+                        <archive>
+                            <addMavenDescriptor>false</addMavenDescriptor>
+                        </archive>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>target-platform-configuration</artifactId>
+                    <version>${tycho.version}</version>
+                    <configuration>
+                        <includePackedArtifacts>false</includePackedArtifacts>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-p2-director-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-p2-repository-plugin</artifactId>
+                    <version>${tycho.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
