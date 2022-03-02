@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Sample
-Bundle-SymbolicName: org.sample
-Bundle-Version: 1.0.0.TEST-20220302_2157
-Automatic-Module-Name: org.sample
-Bundle-RequiredExecutionEnvironment: JavaSE-11
-
